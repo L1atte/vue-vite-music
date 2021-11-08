@@ -1,0 +1,28 @@
+{
+  "name": "vue-music",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@better-scroll/core": "^2.4.2",
+    "@better-scroll/observe-dom": "^2.4.2",
+    "@better-scroll/slide": "^2.4.2",
+    "axios": "^0.24.0",
+    "vue": "^3.2.16",
+    "vue-router": "^4.0.12",
+    "vue3-lazy": "^1.0.0-alpha.1",
+    "vuex": "^4.0.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.9.3",
+    "cookie-parser": "^1.4.5",
+    "js-base64": "^3.7.2",
+    "pinyin": "^2.10.2",
+    "sass": "^1.43.4",
+    "vite": "^2.6.4",
+    "xsrf": "^1.0.0"
+  }
+}
