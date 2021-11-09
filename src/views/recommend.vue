@@ -2,11 +2,11 @@
  * @Author: Latte
  * @Date: 2021-11-07 20:06:20
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-09 01:40:14
+ * @LastEditTime: 2021-11-10 00:34:08
  * @FilePath: \vue-vite-music\src\views\recommend.vue
 -->
 <template>
-  <div class="recommend">
+  <div class="recommend" v-loading:[loadingText]="loading">
     <scroll class="recommend-content">
       <div>
         <div class="slider-wrapper">
@@ -52,7 +52,13 @@ export default {
     return {
       sliders: [],
       albums: [],
+      loadingText: '载入中'
     };
+  },
+  computed: {
+    loading() {
+      return !this.sliders.length && !this.albums.length;
+    },
   },
   async created() {
     const result = await getRecommend();
