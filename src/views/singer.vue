@@ -2,13 +2,18 @@
  * @Author: Latte
  * @Date: 2021-11-07 20:06:20
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-18 01:10:40
+ * @LastEditTime: 2021-11-18 21:07:03
  * @FilePath: \vue-vite-music\src\views\singer.vue
 -->
 <template>
   <div class="singer" v-loading="!singers.length">
     <index-list :data="singers" @select="selectSinger"></index-list>
-    <router-view :singer="selectedSinger"></router-view>
+    <router-view v-slot="{ Component, }">
+      <!-- 使用任何自定义过渡和回退到 `fade` -->
+      <transition appear name="slide">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </template>
 

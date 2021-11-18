@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-16 23:27:04
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-18 00:42:25
+ * @LastEditTime: 2021-11-19 01:23:14
  * @FilePath: \vue-vite-music\src\components\music-list\music-list.vue
 -->
 <template>
@@ -18,11 +18,12 @@
       class="list"
       :style="scrollStyle"
       v-loading="loading"
+      v-no-result:[noResultText]="noResult"
       :probe-type="3"
       @scroll="onScroll"
     >
       <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
+        <song-list :songs="songs" @select="selectItem"></song-list>
       </div>
     </scroll>
   </div>
@@ -31,6 +32,7 @@
 <script>
 import Scroll from "../base/scroll/scroll.vue";
 import SongList from "../base/song-list/song-list.vue";
+import { mapActions } from "vuex";
 
 const RESERVED_HEIGHT = 40;
 
@@ -50,6 +52,10 @@ export default {
     title: String,
     pic: String,
     loading: Boolean,
+    noResultText: {
+      type: String,
+      default: "抱歉，没有找到可播放的歌曲",
+    },
   },
   data() {
     return {
@@ -59,6 +65,9 @@ export default {
     };
   },
   computed: {
+    noResult() {
+      return !this.loading && !this.songs.length;
+    },
     bgImageStyle() {
       const scrollY = this.scrollY;
       let zIndex = 0;
@@ -120,6 +129,13 @@ export default {
     onScroll(pos) {
       this.scrollY = -pos.y;
     },
+    selectItem({ song, index }) {
+      this.selectPlay({
+        list: this.songs,
+        index,
+      });
+    },
+    ...mapActions(["selectPlay"]),
   },
 };
 </script>

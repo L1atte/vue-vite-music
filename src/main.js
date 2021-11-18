@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-07 15:17:10
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-09 23:52:58
+ * @LastEditTime: 2021-11-18 21:48:41
  * @FilePath: \vue-vite-music\src\main.js
  */
 import { createApp } from "vue";
@@ -11,6 +11,7 @@ import router from "./router";
 import store from "./store";
 import lazyPlugin from "vue3-lazy";
 import loadingDirective from "./components/base/loading/directive";
+import noResultDirective from "./components/base/no-result/directive";
 
 const app = createApp(App);
 app
@@ -20,4 +21,5 @@ app
 		loading: import("./assets/logo.png"),
 	})
 	.directive("loading", loadingDirective)
+	.directive("no-result", noResultDirective)
 	.mount("#app");

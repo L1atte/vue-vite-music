@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-16 23:12:27
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-17 01:07:45
+ * @LastEditTime: 2021-11-19 01:23:42
  * @FilePath: \vue-vite-music\src\components\base\song-list\song-list.vue
 -->
 <template>
@@ -11,6 +11,7 @@
       class="item"
       v-for="(song, index) in songs"
       :key="song.id"
+      @click="selectItem(song, index)"
     >
       <div class="content">
         <h2 class="name">{{ song.name }}</h2>
@@ -31,9 +32,13 @@ export default {
       },
     },
   },
+  emits: ["select"],
   methods: {
     getDesc(song) {
       return `${song.singer}·${song.album}`;
+    },
+    selectItem(song, index) {
+      this.$emit("select", { song, index });
     },
   },
 };
