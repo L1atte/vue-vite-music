@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-16 23:27:04
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-19 01:23:14
+ * @LastEditTime: 2021-11-21 21:33:34
  * @FilePath: \vue-vite-music\src\components\music-list\music-list.vue
 -->
 <template>
@@ -12,6 +12,12 @@
     </div>
     <h1 class="title">{{ title }}</h1>
     <div class="bg-image" :style="bgImageStyle" ref="bgImage">
+      <div class="play-btn-wrapper" :style="playBtnStyle">
+        <div v-show="songs.length > 0" class="play-btn" @click="random">
+          <i class="icon-play"></i>
+          <span class="text">随机播放全部</span>
+        </div>
+      </div>
       <div class="filter" :style="filterStyle"></div>
     </div>
     <scroll
@@ -65,6 +71,15 @@ export default {
     };
   },
   computed: {
+    playBtnStyle() {
+      let display = ''
+      if(this.scrollY >= this.maxTranslateY) {
+        display = 'none'
+      }
+      return {
+        display
+      }
+    },
     noResult() {
       return !this.loading && !this.songs.length;
     },
@@ -135,7 +150,10 @@ export default {
         index,
       });
     },
-    ...mapActions(["selectPlay"]),
+    random() {
+      this.randomPlay(this.songs);
+    },
+    ...mapActions(["selectPlay", "randomPlay"]),
   },
 };
 </script>
@@ -175,6 +193,34 @@ export default {
     width: 100%;
     transform-origin: top;
     background-size: cover;
+    .play-btn-wrapper {
+      position: absolute;
+      bottom: 20px;
+      z-index: 10;
+      width: 100%;
+      .play-btn {
+        box-sizing: border-box;
+        width: 135px;
+        padding: 7px 0;
+        margin: 0 auto;
+        text-align: center;
+        border: 1px solid $color-theme;
+        color: $color-theme;
+        border-radius: 100px;
+        font-size: 0;
+      }
+      .icon-play {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 6px;
+        font-size: $font-size-medium-x;
+      }
+      .text {
+        display: inline-block;
+        vertical-align: middle;
+        font-size: $font-size-small;
+      }
+    }
     .filter {
       position: absolute;
       top: 0;
