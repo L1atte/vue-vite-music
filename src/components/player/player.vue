@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-21 21:53:32
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-22 01:35:27
+ * @LastEditTime: 2021-11-23 01:22:34
  * @FilePath: \vue-vite-music\src\components\player\player.vue
 -->
 <template>
@@ -21,16 +21,16 @@
       <div class="bottom">
         <div class="operators">
           <div class="icon i-left">
-            <i class="icon-sequence"></i>
+            <i :class="modeIcon" @click="changeMode"></i>
           </div>
-          <div class="icon i-left">
-            <i class="icon-prev"></i>
+          <div class="icon i-left" :class="disableCls">
+            <i class="icon-prev" @click="prev"></i>
           </div>
-          <div class="icon i-center" @click="togglePlay">
-            <i :class="playIcon"></i>
+          <div class="icon i-center" :class="disableCls">
+            <i :class="playIcon" @click="togglePlay"></i>
           </div>
-          <div class="icon i-right">
-            <i class="icon-next"></i>
+          <div class="icon i-right" :class="disableCls">
+            <i class="icon-next" @click="next"></i>
           </div>
           <div class="icon i-right">
             <i class="icon-not-favorite"></i>
@@ -38,25 +38,43 @@
         </div>
       </div>
     </div>
-    <audio ref="audioRef" @pause="pause"></audio>
+    <audio
+      ref="audioRef"
+      @pause="pause"
+      @canplay="ready"
+      @error="error"
+    ></audio>
   </div>
 </template>
 
 <script>
 import { useStore } from "vuex";
 import { computed, ref, watch } from "vue";
+import useMode from "./use-mode";
 export default {
   name: "player",
   setup() {
     // data
     const audioRef = ref(null);
+    const songReady = ref(false);
 
+    // vuex
     const store = useStore();
     const fullScreen = computed(() => store.state.fullScreen);
     const currentSong = computed(() => store.getters.currentSong);
     const playing = computed(() => store.state.playing);
+    const currentIndex = computed(() => store.state.currentIndex);
+
+    // hooks
+    const { modeIcon, changeMode } = useMode();
+
+    // computed
+    const playlist = computed(() => store.state.playlist);
     const playIcon = computed(() => {
       return playing.value ? "icon-pause" : "icon-play";
+    });
+    const disableCls = computed(() => {
+      return songReady.value ? "" : "disable";
     });
 
     // watch
@@ -64,27 +82,98 @@ export default {
       if (!newSong.id || !newSong.url) {
         return;
       }
+      songReady.value = false;
       const audioEl = audioRef.value;
       audioEl.src = newSong.url;
       audioEl.play();
     });
 
     watch(playing, (newPlaying) => {
-      console.log(audioRef);
+      if (!songReady.value) {
+        return;
+      }
       const audioEl = audioRef.value;
       newPlaying ? audioEl.play() : audioEl.pause();
     });
 
+    // methods
     function goBack() {
       store.commit("setFullScreen", false);
     }
 
     function togglePlay() {
+      if (!songReady.value) {
+        return;
+      }
       store.commit("setPlayingState", !playing.value);
     }
 
     function pause() {
       store.commit("setPlayingState", false);
+    }
+
+    function prev() {
+      const list = playlist.value;
+
+      if (!songReady.value || !list.length) {
+        return;
+      }
+
+      if (list.length === 1) {
+        loop();
+      } else {
+        let index = currentIndex.value - 1;
+        if (index === -1) {
+          index = list.length - 1;
+        }
+
+        store.commit("setCurrentIndex", index);
+        if (!playing.value) {
+          store.commit("setPlayingState", true);
+        }
+      }
+    }
+
+    function next() {
+      const list = playlist.value;
+
+      if (!songReady.value || !list.length) {
+        return;
+      }
+
+      if (list.length === 1) {
+        loop();
+      } else {
+        let index = currentIndex.value + 1;
+        if (index >= list.length) {
+          index = 0;
+        }
+
+        store.commit("setCurrentIndex", index);
+        if (!playing.value) {
+          store.commit("setPlayingState", true);
+        }
+      }
+    }
+
+    function loop() {
+      const audioEl = audioRef.value;
+      audioEl.currentTime = 0;
+      audioEl.play();
+    }
+
+    function ready() {
+      if (songReady.value) return;
+
+      songReady.value = true;
+    }
+
+    /**
+     * 当歌曲播放出现错误时，会派发一个 error 事件，所以监听error事件(@error="error")
+     * 所以我们需要在此时设置songReady=true，以此允许歌曲前进播放、后退播放
+     */
+    function error() {
+      songReady.value = true;
     }
 
     return {
@@ -95,6 +184,14 @@ export default {
       playIcon,
       togglePlay,
       pause,
+      prev,
+      next,
+      ready,
+      disableCls,
+      error,
+      // mode
+      modeIcon,
+      changeMode,
     };
   },
 };
