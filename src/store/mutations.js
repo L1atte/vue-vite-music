@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-19 00:48:33
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-21 21:06:23
+ * @LastEditTime: 2021-11-24 22:50:33
  * @FilePath: \vue-vite-music\src\store\mutations.js
  */
 const mutations = {
@@ -24,6 +24,9 @@ const mutations = {
   setFullScreen(state, fullScreen) {
     state.fullScreen = fullScreen
   },
+  setFavoriteList(state, list) {
+    state.favoriteList = list
+  }
 };
 
 export default mutations

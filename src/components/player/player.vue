@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-21 21:53:32
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-23 01:22:34
+ * @LastEditTime: 2021-11-25 00:30:38
  * @FilePath: \vue-vite-music\src\components\player\player.vue
 -->
 <template>
@@ -19,6 +19,13 @@
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
       <div class="bottom">
+        <div class="progress-wrapper">
+          <span class="time time-l">{{ currentTime }}</span>
+          <div class="progress-bar-wrapper">
+            <progress-bar :progress="progress"></progress-bar>
+          </div>
+          <span class="time time-r">{{ currentSong.duration }}</span>
+        </div>
         <div class="operators">
           <div class="icon i-left">
             <i :class="modeIcon" @click="changeMode"></i>
@@ -33,7 +40,11 @@
             <i class="icon-next" @click="next"></i>
           </div>
           <div class="icon i-right">
-            <i class="icon-not-favorite"></i>
+            <i
+              class="icon-not-favorite"
+              @click="toggleFavorite(currentSong)"
+              :class="getFavoriteIcon(currentSong)"
+            ></i>
           </div>
         </div>
       </div>
@@ -43,6 +54,7 @@
       @pause="pause"
       @canplay="ready"
       @error="error"
+      @timeupdate="updateTime"
     ></audio>
   </div>
 </template>
@@ -51,14 +63,20 @@
 import { useStore } from "vuex";
 import { computed, ref, watch } from "vue";
 import useMode from "./use-mode";
+import useFavorite from "./use-favorite";
+import ProgressBar from "./progress-bar.vue";
 export default {
   name: "player",
+  components: {
+    ProgressBar,
+  },
   setup() {
     // data
     const audioRef = ref(null);
     const songReady = ref(false);
+    const currentTime = ref(0);
 
-    // vuex
+    // Vuex
     const store = useStore();
     const fullScreen = computed(() => store.state.fullScreen);
     const currentSong = computed(() => store.getters.currentSong);
@@ -67,12 +85,18 @@ export default {
 
     // hooks
     const { modeIcon, changeMode } = useMode();
+    const { getFavoriteIcon, toggleFavorite } = useFavorite();
 
     // computed
     const playlist = computed(() => store.state.playlist);
     const playIcon = computed(() => {
       return playing.value ? "icon-pause" : "icon-play";
     });
+
+    const progress = computed(() => {
+      return currentTime.value / currentSong.value.duration;
+    });
+
     const disableCls = computed(() => {
       return songReady.value ? "" : "disable";
     });
@@ -82,6 +106,7 @@ export default {
       if (!newSong.id || !newSong.url) {
         return;
       }
+      currentTime.value = 0;
       songReady.value = false;
       const audioEl = audioRef.value;
       audioEl.src = newSong.url;
@@ -176,9 +201,16 @@ export default {
       songReady.value = true;
     }
 
+    // 获取当前歌曲播放时间
+    function updateTime(e) {
+      currentTime.value = e.target.currentTime;
+    }
+
     return {
       audioRef,
       fullScreen,
+      currentTime,
+      progress,
       currentSong,
       goBack,
       playIcon,
@@ -192,6 +224,9 @@ export default {
       // mode
       modeIcon,
       changeMode,
+      // favorite
+      getFavoriteIcon,
+      toggleFavorite,
     };
   },
 };
@@ -258,6 +293,29 @@ export default {
       position: absolute;
       bottom: 50px;
       width: 100%;
+      .progress-wrapper {
+        display: flex;
+        align-items: center;
+        width: 80%;
+        margin: 0px auto;
+        padding: 10px 0;
+        .time {
+          color: $color-text;
+          font-size: $font-size-small;
+          flex: 0 0 40px;
+          line-height: 30px;
+          width: 40px;
+          &.time-l {
+            text-align: left;
+          }
+          &.time-r {
+            text-align: right;
+          }
+        }
+        .progress-bar-wrapper {
+          flex: 1;
+        }
+      }
       .operators {
         display: flex;
         align-items: center;
