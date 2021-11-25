@@ -2,14 +2,20 @@
  * @Author: Latte
  * @Date: 2021-11-25 00:01:10
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-25 00:14:22
+ * @LastEditTime: 2021-11-26 00:28:59
  * @FilePath: \vue-vite-music\src\components\player\progress-bar.vue
 -->
 <template>
-  <div class="progress-bar">
+  <div class="progress-bar" @click="onClick">
     <div class="bar-inner">
-      <div class="progress" :style="progressStyle"></div>
-      <div class="progress-btn-wrapper" :style="btnStyle">
+      <div ref="progress" class="progress" :style="progressStyle"></div>
+      <div
+        class="progress-btn-wrapper"
+        :style="btnStyle"
+        @touchstart.prevent="onTouchStart"
+        @touchmove.prevent="onTouchMove"
+        @touchend.prevent="onTouchEnd"
+      >
         <div class="progress-btn"></div>
       </div>
     </div>
@@ -26,6 +32,7 @@ export default {
       default: 0,
     },
   },
+  emits: ["progress-changing", "progress-changed"],
   data() {
     return {
       offset: 0,
@@ -47,40 +54,71 @@ export default {
       this.offset = barWidth * newProgress;
     },
   },
+  created() {
+    // 只是为了共享touch对象，而不需要一个响应式的touch，所以定义在created中而不是data中。可以减少性能浪费
+    this.touch = {};
+  },
+  methods: {
+    onTouchStart(e) {
+      this.touch.x1 = e.touches[0].pageX;
+      this.touch.beginWidth = this.$refs.progress.clientWidth;
+    },
+    onTouchMove(e) {
+      const delta = e.touches[0].pageX - this.touch.x1;
+      const tempWidth = this.touch.beginWidth + delta;
+      const barWidth = this.$el.clientWidth - progressBtnWidth;
+      // 限制progress在[0,1]
+      const progress = Math.min(1, Math.max(tempWidth / barWidth, 0));
+      this.offset = barWidth * progress;
+      this.$emit("progress-changing", progress);
+    },
+    onTouchEnd() {
+      const barWidth = this.$el.clientWidth - progressBtnWidth;
+      const progress = this.$refs.progress.clientWidth / barWidth;
+      this.$emit("progress-changed", progress);
+    },
+    onClick(e) {
+      const rect = this.$el.getBoundingClientRect();
+      const offsetWidth = e.pageX - rect.left;
+      const barWidth = this.$el.clientWidth - progressBtnWidth;
+      const progress = offsetWidth / barWidth;
+      this.$emit("progress-changed", progress);
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-  .progress-bar {
-    height: 30px;
-    .bar-inner {
-      position: relative;
-      top: 13px;
-      height: 4px;
-      background: rgba(0, 0, 0, 0.3);
-      .progress {
-        position: absolute;
-        height: 100%;
+.progress-bar {
+  height: 30px;
+  .bar-inner {
+    position: relative;
+    top: 13px;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    .progress {
+      position: absolute;
+      height: 100%;
+      background: $color-theme;
+    }
+    .progress-btn-wrapper {
+      position: absolute;
+      left: -8px;
+      top: -13px;
+      width: 30px;
+      height: 30px;
+      .progress-btn {
+        position: relative;
+        top: 7px;
+        left: 7px;
+        box-sizing: border-box;
+        width: 16px;
+        height: 16px;
+        border: 3px solid $color-text;
+        border-radius: 50%;
         background: $color-theme;
-      }
-      .progress-btn-wrapper {
-        position: absolute;
-        left: -8px;
-        top: -13px;
-        width: 30px;
-        height: 30px;
-        .progress-btn {
-          position: relative;
-          top: 7px;
-          left: 7px;
-          box-sizing: border-box;
-          width: 16px;
-          height: 16px;
-          border: 3px solid $color-text;
-          border-radius: 50%;
-          background: $color-theme;
-        }
       }
     }
   }
+}
 </style>
