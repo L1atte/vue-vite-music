@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-21 21:53:32
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-26 00:25:00
+ * @LastEditTime: 2021-11-28 23:48:00
  * @FilePath: \vue-vite-music\src\components\player\player.vue
 -->
 <template>
@@ -17,6 +17,40 @@
         </div>
         <h1 class="title">{{ currentSong.name }}</h1>
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
+      </div>
+      <div class="middle">
+        <div class="middle-l">
+          <div class="cd-wrapper">
+            <div class="cd" ref="cdRef">
+              <img
+                ref="cdImageRef"
+                class="image"
+                :class="cdCls"
+                :src="currentSong.pic"
+              />
+            </div>
+          </div>
+          <div class="playing-lyric-wrapper">
+            <div class="playing-lyric">{{ playingLyric }}</div>
+          </div>
+        </div>
+        <scroll class="middle-r" ref="lyricScrollRef">
+          <div class="lyric-wrapper">
+            <div v-if="currentLyric" ref="lyricListRef">
+              <p
+                class="text"
+                :class="{ current: currentLineNum === index }"
+                v-for="(line, index) in currentLyric.lines"
+                :key="line.num"
+              >
+                {{ line.txt }}
+              </p>
+            </div>
+            <div class="pure-music" v-show="pureMusicLyric">
+              <p>{{ pureMusicLyric }}</p>
+            </div>
+          </div>
+        </scroll>
       </div>
       <div class="bottom">
         <div class="progress-wrapper">
@@ -71,13 +105,17 @@ import { useStore } from "vuex";
 import { computed, ref, watch } from "vue";
 import useMode from "./use-mode";
 import useFavorite from "./use-favorite";
+import useCD from "./use-cd";
+import useLyric from "./use-lyric";
 import ProgressBar from "./progress-bar.vue";
 import { formatTime } from "../../assets/js/util";
 import { PLAY_MODE } from "../../assets/js/constant";
+import Scroll from "../base/scroll/scroll.vue";
 export default {
   name: "player",
   components: {
     ProgressBar,
+    Scroll,
   },
   setup() {
     // data
@@ -99,6 +137,20 @@ export default {
     // hooks
     const { modeIcon, changeMode } = useMode();
     const { getFavoriteIcon, toggleFavorite } = useFavorite();
+    const { cdCls, cdRef, cdImageRef } = useCD();
+    const {
+      currentLyric,
+      currentLineNum,
+      playLyric,
+      stopLyric,
+      lyricScrollRef,
+      lyricListRef,
+      pureMusicLyric,
+      playingLyric,
+    } = useLyric({
+      songReady,
+      currentTime,
+    });
 
     // computed
     const playlist = computed(() => store.state.playlist);
@@ -131,7 +183,13 @@ export default {
         return;
       }
       const audioEl = audioRef.value;
-      newPlaying ? audioEl.play() : audioEl.pause();
+      if (newPlaying) {
+        audioEl.play();
+        playLyric();
+      } else {
+        audioEl.pause();
+        stopLyric();
+      }
     });
 
     // methods
@@ -205,6 +263,7 @@ export default {
       if (songReady.value) return;
 
       songReady.value = true;
+      playLyric();
     }
 
     /**
@@ -227,6 +286,9 @@ export default {
     function onProgressChanging(progress) {
       progressChanging = true;
       currentTime.value = currentSong.value.duration * progress;
+      // 先把歌词进度同步到当前拖动位置，然后暂停歌词播放进度
+      playLyric();
+      stopLyric();
     }
 
     function onProgressChanged(progress) {
@@ -236,6 +298,7 @@ export default {
       if (!playing.value) {
         store.commit("setPlayingState", true);
       }
+      playLyric();
     }
 
     function end() {
@@ -273,6 +336,17 @@ export default {
       // favorite
       getFavoriteIcon,
       toggleFavorite,
+      // cd
+      cdCls,
+      cdRef,
+      cdImageRef,
+      // lyric
+      currentLyric,
+      currentLineNum,
+      lyricScrollRef,
+      lyricListRef,
+      pureMusicLyric,
+      playingLyric,
     };
   },
 };
@@ -333,6 +407,87 @@ export default {
         text-align: center;
         font-size: $font-size-medium;
         color: $color-text;
+      }
+    }
+    .middle {
+      position: fixed;
+      width: 100%;
+      top: 80px;
+      bottom: 170px;
+      white-space: nowrap;
+      font-size: 0;
+      .middle-l {
+        display: inline-block;
+        vertical-align: top;
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-top: 80%;
+        .cd-wrapper {
+          position: absolute;
+          left: 10%;
+          top: 0;
+          width: 80%;
+          box-sizing: border-box;
+          height: 100%;
+          .cd {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            img {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              box-sizing: border-box;
+              border-radius: 50%;
+              border: 10px solid rgba(255, 255, 255, 0.1);
+            }
+            .playing {
+              animation: rotate 20s linear infinite;
+            }
+          }
+        }
+        .playing-lyric-wrapper {
+          width: 80%;
+          margin: 30px auto 0 auto;
+          overflow: hidden;
+          text-align: center;
+          .playing-lyric {
+            height: 20px;
+            line-height: 20px;
+            font-size: $font-size-medium;
+            color: $color-text-l;
+          }
+        }
+      }
+      .middle-r {
+        display: inline-block;
+        vertical-align: top;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        .lyric-wrapper {
+          width: 80%;
+          margin: 0 auto;
+          overflow: hidden;
+          text-align: center;
+          .text {
+            line-height: 32px;
+            color: $color-text-l;
+            font-size: $font-size-medium;
+            &.current {
+              color: $color-text;
+            }
+          }
+          .pure-music {
+            padding-top: 50%;
+            line-height: 32px;
+            color: $color-text-l;
+            font-size: $font-size-medium;
+          }
+        }
       }
     }
     .bottom {
