@@ -2,11 +2,11 @@
  * @Author: Latte
  * @Date: 2021-11-21 21:53:32
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-29 01:02:10
+ * @LastEditTime: 2021-11-30 01:07:53
  * @FilePath: \vue-vite-music\src\components\player\player.vue
 -->
 <template>
-  <div class="player">
+  <div class="player" v-show="playlist.length">
     <div class="normal-player" v-show="fullScreen">
       <div class="background">
         <img :src="currentSong.pic" />
@@ -98,6 +98,7 @@
         </div>
       </div>
     </div>
+    <mini-player :progress="progress" :toggle-play="togglePlay"></mini-player>
     <audio
       ref="audioRef"
       @pause="pause"
@@ -121,11 +122,13 @@ import ProgressBar from "./progress-bar.vue";
 import { formatTime } from "../../assets/js/util";
 import { PLAY_MODE } from "../../assets/js/constant";
 import Scroll from "../base/scroll/scroll.vue";
+import MiniPlayer from "./mini-player.vue";
 export default {
   name: "player",
   components: {
     ProgressBar,
     Scroll,
+    MiniPlayer,
   },
   setup() {
     // data
@@ -334,6 +337,7 @@ export default {
       currentTime,
       progress,
       currentSong,
+      playlist,
       goBack,
       playIcon,
       togglePlay,

@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-29 00:22:31
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-29 01:06:00
+ * @LastEditTime: 2021-11-29 23:34:13
  * @FilePath: \vue-vite-music\src\components\player\use-middle-interactive.js
  */
 import { ref, computed } from "@vue/reactivity";
@@ -16,10 +16,28 @@ export default function useMiddleInteractive(params) {
 
 	function onMiddleTouchStart(e) {
 		touch.startX = e.touches[0].pageX;
+		touch.startY = e.touches[0].pageY;
+		// 定义方向锁
+		touch.directionLocked = "";
 	}
 
 	function onMiddleTouchMove(e) {
 		const deltaX = e.touches[0].pageX - touch.startX;
+		const deltaY = e.touches[0].pageY - touch.startY;
+
+		const absDeltaX = Math.abs(deltaX);
+		const absDeltaY = Math.abs(deltaY);
+
+		// 设置方向锁
+		if (!touch.directionLocked) {
+			touch.directionLocked = absDeltaX > absDeltaY ? "h" : "v";
+		}
+		if (touch.directionLocked === "v") {
+			// 修复垂直拖拽bug
+			// 方向锁为垂直方向时,直接return, 避免垂直拖拽
+			return;
+		}
+
 		const left = currentView === "cd" ? 0 : -window.innerWidth;
 		const offsetWidth = Math.min(
 			0,
@@ -43,12 +61,10 @@ export default function useMiddleInteractive(params) {
 
 		middleLStyle.value = {
 			opacity: 1 - touch.percent,
-			transitionDuration: "0ms",
 		};
 
 		middleRStyle.value = {
 			transform: `translate3D(${offsetWidth}px,0,0)`,
-			transitionDuration: "0ms",
 		};
 	}
 
