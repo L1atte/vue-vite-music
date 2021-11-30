@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-21 21:53:32
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-30 01:07:53
+ * @LastEditTime: 2021-11-30 23:17:04
  * @FilePath: \vue-vite-music\src\components\player\player.vue
 -->
 <template>
@@ -66,6 +66,7 @@
           <span class="time time-l">{{ formatTime(currentTime) }}</span>
           <div class="progress-bar-wrapper">
             <progress-bar
+              ref="barRef"
               :progress="progress"
               @progress-changing="onProgressChanging"
               @progress-changed="onProgressChanged"
@@ -112,7 +113,7 @@
 
 <script>
 import { useStore } from "vuex";
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import useMode from "./use-mode";
 import useFavorite from "./use-favorite";
 import useCD from "./use-cd";
@@ -133,6 +134,7 @@ export default {
   setup() {
     // data
     const audioRef = ref(null);
+    const barRef = ref(null);
     const songReady = ref(false);
     const currentTime = ref(0);
     let progressChanging = false;
@@ -210,6 +212,15 @@ export default {
       } else {
         audioEl.pause();
         stopLyric();
+      }
+    });
+
+    // 观测fullScreen，fullScreen为true时重新计算，避免进度条bug
+    watch(fullScreen, async (newFullScreen) => {
+      if (newFullScreen) {
+        await nextTick();
+        // 因为在setOffset内部访问了dom元素(this.$el.clientWidth)，所以要在nextTick之后才能获取到 this.$el.clientWidth
+        barRef.value.setOffset(progress.value);
       }
     });
 
@@ -333,6 +344,7 @@ export default {
 
     return {
       audioRef,
+      barRef,
       fullScreen,
       currentTime,
       progress,

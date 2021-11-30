@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-25 00:01:10
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-26 00:28:59
+ * @LastEditTime: 2021-11-30 23:20:39
  * @FilePath: \vue-vite-music\src\components\player\progress-bar.vue
 -->
 <template>
@@ -50,8 +50,7 @@ export default {
     // 这里用watch实现而不用computed的原因是
     // 用computed的话，在mounted不能获取this.$el.clientWidth
     progress(newProgress) {
-      const barWidth = this.$el.clientWidth - progressBtnWidth;
-      this.offset = barWidth * newProgress;
+      this.setOffset(newProgress);
     },
   },
   created() {
@@ -83,6 +82,10 @@ export default {
       const barWidth = this.$el.clientWidth - progressBtnWidth;
       const progress = offsetWidth / barWidth;
       this.$emit("progress-changed", progress);
+    },
+    setOffset(progress) {
+      const barWidth = this.$el.clientWidth - progressBtnWidth;
+      this.offset = barWidth * progress;
     },
   },
 };
