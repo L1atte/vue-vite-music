@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-29 23:42:34
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-01 00:26:32
+ * @LastEditTime: 2021-12-06 01:32:39
  * @FilePath: \vue-vite-music\src\components\player\mini-player.vue
 -->
 <template>
@@ -36,18 +36,23 @@
           ></i>
         </progress-circle>
       </div>
+      <div class="control" @click.stop="showPlaylist">
+        <i class="icon-playlist"></i>
+      </div>
+      <playlist ref="playlistRef"></playlist>
     </div>
   </transition>
 </template>
 
 <script>
-import { computed } from "@vue/reactivity";
+import { computed, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import useCD from "./use-cd";
 import useMiniSlider from "./use-mini-slider";
 import ProgressCircle from "./progress-circle.vue";
+import Playlist from "./playlist.vue";
 export default {
-  components: { ProgressCircle },
+  components: { ProgressCircle, Playlist },
   name: "mini-player",
   props: {
     progress: {
@@ -57,6 +62,7 @@ export default {
     togglePlay: Function,
   },
   setup() {
+    const playlistRef = ref(null);
     const store = useStore();
     const fullScreen = computed(() => store.state.fullScreen);
     const currentSong = computed(() => store.getters.currentSong);
@@ -74,11 +80,17 @@ export default {
       store.commit("setFullScreen", true);
     }
 
+    function showPlaylist() {
+      playlistRef.value.show()
+    }
+
     return {
+      playlistRef,
       fullScreen,
       currentSong,
       miniPlayIcon,
       showNormalPlayer,
+      showPlaylist,
       playlist,
       // cd
       cdCls,
