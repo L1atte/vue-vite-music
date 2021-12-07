@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-21 21:53:32
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-02 01:01:49
+ * @LastEditTime: 2021-12-07 00:37:33
  * @FilePath: \vue-vite-music\src\components\player\player.vue
 -->
 <template>
@@ -213,6 +213,7 @@ export default {
       const audioEl = audioRef.value;
       audioEl.src = newSong.url;
       audioEl.play();
+      store.commit("setPlayingState", true);
     });
 
     watch(playing, (newPlaying) => {
@@ -270,9 +271,6 @@ export default {
         }
 
         store.commit("setCurrentIndex", index);
-        if (!playing.value) {
-          store.commit("setPlayingState", true);
-        }
       }
     }
 
@@ -292,9 +290,6 @@ export default {
         }
 
         store.commit("setCurrentIndex", index);
-        if (!playing.value) {
-          store.commit("setPlayingState", true);
-        }
       }
     }
 

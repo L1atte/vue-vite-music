@@ -2,35 +2,57 @@
  * @Author: Latte
  * @Date: 2021-12-06 01:00:54
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-06 01:44:27
+ * @LastEditTime: 2021-12-08 04:45:28
  * @FilePath: \vue-vite-music\src\components\player\playlist.vue
 -->
 <template>
   <teleport to="body">
     <transition name="list-fade">
       <div class="playlist" v-show="visible && playlist.length" @click="hide">
-        <div class="list-wrapper">
+        <!-- 添加hack方法，添加@click.stop，阻止方法冒泡被@click="hide"捕获 -->
+        <div class="list-wrapper" @click.stop>
           <div class="list-header">
             <h1 class="title">
               <i class="icon" :class="modeIcon" @click.stop="changeMode"></i>
               <span class="text">{{ modeText }}</span>
+              <span class="clear" @click="showConfirm">
+                <i class="icon-clear"></i>
+              </span>
             </h1>
           </div>
           <scroll ref="scrollRef" class="list-content">
-            <ul>
-              <li class="item" v-for="song in sequenceList" :key="song.id">
+            <transition-group ref="listRef" tag="ul" name="list">
+              <li
+                class="item"
+                v-for="song in sequenceList"
+                :key="song.id"
+                @click="selectItem(song)"
+              >
                 <i class="current" :class="getCurrentIcon(song)"></i>
                 <span class="text">{{ song.name }}</span>
                 <span class="favorite" @click.stop="toggleFavorite">
                   <i :class="getFavoriteIcon(song)"></i>
                 </span>
+                <span
+                  class="delete"
+                  :class="{ disable: removing }"
+                  @click.stop="removeSong(song)"
+                >
+                  <i class="icon-delete"></i>
+                </span>
               </li>
-            </ul>
+            </transition-group>
           </scroll>
           <div class="list-footer" @click.stop="hide">
             <span>关闭</span>
           </div>
         </div>
+        <confirm
+          ref="confirmRef"
+          @confirm="confirmClear"
+          text="是否清空播放列表？"
+          confirm-btn-text="清空"
+        ></confirm>
       </div>
     </transition>
   </teleport>
@@ -38,17 +60,22 @@
 
 <script>
 import scroll from "../base/scroll/scroll.vue";
+import Confirm from "../base/confirm/confirm.vue";
 import { ref, computed } from "@vue/reactivity";
-import { nextTick } from "@vue/runtime-core";
+import { nextTick, watch } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import useMode from "./use-mode";
 import useFavorite from "./use-favorite";
+
 export default {
   name: "playlist",
-  components: { scroll },
+  components: { scroll, Confirm },
   setup() {
     const visible = ref(false);
     const scrollRef = ref(null);
+    const listRef = ref(null);
+    const confirmRef = ref(null);
+    const removing = ref(false);
 
     // Vuex
     const store = useStore();
@@ -59,6 +86,17 @@ export default {
     // hooks
     const { modeIcon, modeText, changeMode } = useMode();
     const { getFavoriteIcon, toggleFavorite } = useFavorite();
+
+    // watch
+    // 切换歌曲时自动滚动到当前歌曲
+    watch(currentSong, async (newSong) => {
+      if (!visible.value || !newSong.id) return;
+
+      // 因为部分操作也会导致currentSong变化，比如删除歌曲。
+      // 为了避免这种意外操作的影响，在nextTick之后再进行滚动
+      await nextTick();
+      scrollToCurrent();
+    });
 
     function hide() {
       visible.value = false;
@@ -71,6 +109,15 @@ export default {
       // 所以需要在 nextTick 之后运行
       await nextTick();
       refreshScroll();
+      scrollToCurrent();
+    }
+
+    function selectItem(song) {
+      const index = playlist.value.findIndex((item) => {
+        return item.id === song.id;
+      });
+      store.commit("setCurrentIndex", index);
+      store.commit("setPlayingState", true);
     }
 
     function getCurrentIcon(song) {
@@ -84,14 +131,60 @@ export default {
       scrollRef.value.scroll.refresh();
     }
 
+    function scrollToCurrent() {
+      // 获得当前播放歌曲的索引
+      const index = sequenceList.value.findIndex((song) => {
+        return currentSong.value.id === song.id;
+      });
+
+      if (index === -1) {
+        return;
+      }
+
+      // 根据索引获得当前播放歌曲的dom
+      const target = listRef.value.$el.children[index];
+
+      scrollRef.value.scroll.scrollToElement(target, 300);
+    }
+
+    function removeSong(song) {
+      if (removing.value) {
+        return;
+      }
+      removing.value = true;
+      store.dispatch("removeSong", song);
+      if (!playlist.value.length) {
+        hide();
+      }
+      setTimeout(() => {
+        removing.value = false;
+      }, 300);
+    }
+
+    function showConfirm() {
+      confirmRef.value.show();
+    }
+
+    function confirmClear() {
+      store.dispatch("clearSongList");
+      hide();
+    }
+
     return {
       visible,
+      removing,
       scrollRef,
+      confirmRef,
+      listRef,
       playlist,
       sequenceList,
       hide,
       show,
+      selectItem,
+      removeSong,
       getCurrentIcon,
+      showConfirm,
+      confirmClear,
       // mode
       modeIcon,
       modeText,

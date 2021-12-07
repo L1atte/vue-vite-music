@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-30 23:52:08
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-01 00:30:59
+ * @LastEditTime: 2021-12-08 04:39:48
  * @FilePath: \vue-vite-music\src\components\player\use-mini-slider.js
  */
 import { ref, computed } from "@vue/reactivity";
@@ -45,7 +45,6 @@ export default function useMiniSlider() {
 
 					sliderVal.on("slidePageChanged", ({ pageX }) => {
 						store.commit("setCurrentIndex", pageX);
-						store.commit("setPlayingState", true);
 					});
 				} else {
 					sliderVal.refresh();
@@ -57,6 +56,13 @@ export default function useMiniSlider() {
 		watch(currentIndex, (newIndex) => {
 			if (sliderVal && sliderShow.value) {
 				sliderVal.goToPage(newIndex, 0, 0);
+			}
+		});
+
+		watch(playlist, async (newList) => {
+			if (sliderVal && sliderShow.value && newList.length) {
+				await nextTick();
+				sliderVal.refresh();
 			}
 		});
 	});
