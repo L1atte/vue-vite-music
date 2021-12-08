@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-16 23:27:04
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-21 21:33:34
+ * @LastEditTime: 2021-12-09 00:06:37
  * @FilePath: \vue-vite-music\src\components\music-list\music-list.vue
 -->
 <template>
@@ -36,9 +36,9 @@
 </template>
 
 <script>
-import Scroll from "../base/scroll/scroll.vue";
+import Scroll from "../wrap-scroll/index.js";
 import SongList from "../base/song-list/song-list.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 const RESERVED_HEIGHT = 40;
 
@@ -72,13 +72,13 @@ export default {
   },
   computed: {
     playBtnStyle() {
-      let display = ''
-      if(this.scrollY >= this.maxTranslateY) {
-        display = 'none'
+      let display = "";
+      if (this.scrollY >= this.maxTranslateY) {
+        display = "none";
       }
       return {
-        display
-      }
+        display,
+      };
     },
     noResult() {
       return !this.loading && !this.songs.length;
@@ -113,8 +113,10 @@ export default {
       };
     },
     scrollStyle() {
+      const bottom = this.playlist.length ? "60px" : "0";
       return {
         top: `${this.imageHeight}px`,
+        bottom,
       };
     },
     filterStyle() {
@@ -132,6 +134,7 @@ export default {
         backdropFilter: `blur(${blur}px)`,
       };
     },
+    ...mapState(["playlist"]),
   },
   mounted() {
     this.imageHeight = this.$refs.bgImage.clientHeight;

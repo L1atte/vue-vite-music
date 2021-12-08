@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-10 01:11:44
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-16 00:20:55
+ * @LastEditTime: 2021-12-09 01:20:53
  * @FilePath: \vue-vite-music\src\components\base\index-list.vue\index-list.vue
 -->
 <template>
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import Scroll from "../scroll/scroll.vue";
+import Scroll from "@/components/wrap-scroll/index.js";
 import useFixed from "./use-fixed";
 import useShortcut from "./use-shortcut";
 export default {
