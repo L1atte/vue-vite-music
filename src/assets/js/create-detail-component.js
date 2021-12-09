@@ -2,12 +2,12 @@
  * @Author: Latte
  * @Date: 2021-12-09 01:47:05
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-09 01:58:46
+ * @LastEditTime: 2021-12-09 21:34:05
  * @FilePath: \vue-vite-music\src\assets\js\create-detail-component.js
  */
 import MusicList from "@/components/music-list/music-list.vue";
 import storage from "good-storage";
-import { processSongs } from "@/server  /song.js";
+import { processSongs } from "@/server/song.js";
 
 export default function createDetailComponent(name, key, fetch) {
 	return {
