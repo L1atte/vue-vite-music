@@ -2,13 +2,19 @@
  * @Author: Latte
  * @Date: 2021-11-07 15:17:10
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-09 00:22:19
+ * @LastEditTime: 2021-12-13 01:43:11
  * @FilePath: \vue-vite-music\src\App.vue
 -->
 <template>
   <m-header></m-header>
   <tab></tab>
   <router-view :style="viewStyle"></router-view>
+  <router-view v-slot="{ Component }" name="user" :style="viewStyle">
+    <!-- 使用任何自定义过渡和回退到 `fade` -->
+    <transition appear name="slide">
+      <component :is="Component" />
+    </transition>
+  </router-view>
   <player></player>
 </template>
 

@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-07 15:56:15
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-09 22:49:17
+ * @LastEditTime: 2021-12-13 01:47:13
  * @FilePath: \vue-vite-music\src\router\index.js
  */
 import { createRouter, createWebHashHistory } from "vue-router";
@@ -45,6 +45,18 @@ const routes = [
 	{
 		path: "/search",
 		component: () => import("@/views/search.vue"),
+		children: [
+			{
+				path: ":id",
+				component: () => import("@/views/singer-detail.vue"),
+			},
+		],
+	},
+	{
+		path: "/user",
+		components: {
+			user: () => import("@/views/user-center.vue"),
+		},
 	},
 ];
 

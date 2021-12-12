@@ -1,57 +1,147 @@
-<!--
- * @Author: Latte
- * @Date: 2021-11-07 20:06:20
- * @LAstEditors: Latte
- * @LastEditTime: 2021-12-10 00:47:31
- * @FilePath: \vue-vite-music\src\views\search.vue
--->
 <template>
   <div class="search">
     <div class="search-input-wrapper">
       <search-input v-model="query"></search-input>
     </div>
-    <div class="search-content">
-      <div class="hot-keys">
-        <h1 class="title">热门搜索</h1>
-        <ul>
-          <li
-            class="item"
-            v-for="item in hotKeys"
-            :key="item.id"
-            @click="addQuery(item.key)"
-          >
-            <span>{{ item.key }}</span>
-          </li>
-        </ul>
+    <scroll ref="scrollRef" class="search-content" v-show="!query">
+      <div>
+        <div class="hot-keys">
+          <h1 class="title">热门搜索</h1>
+          <ul>
+            <li
+              class="item"
+              v-for="item in hotKeys"
+              :key="item.id"
+              @click="addQuery(item.key)"
+            >
+              <span>{{ item.key }}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="search-history" v-show="searchHistory.length">
+          <h1 class="title">
+            <span class="text">搜索历史</span>
+            <span class="clear" @click="showConfirm">
+              <i class="icon-clear"></i>
+            </span>
+          </h1>
+          <confirm
+            ref="confirmRef"
+            text="是否清空所有搜索历史"
+            confirm-btn-text="清空"
+            @confirm="clearSearch"
+          ></confirm>
+          <search-list
+            :searches="searchHistory"
+            @select="addQuery"
+            @delete="deleteSearch"
+          ></search-list>
+        </div>
       </div>
+    </scroll>
+    <div class="search-result" v-show="query">
+      <suggest
+        :query="query"
+        @select-song="selectSong"
+        @select-singer="selectSinger"
+      ></suggest>
     </div>
+    <router-view v-slot="{ Component }">
+      <transition appear name="slide">
+        <component :is="Component" :data="selectedSinger" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
 <script>
 import SearchInput from "@/components/search/search-input.vue";
-import { ref } from "@vue/reactivity";
-import { watch } from "@vue/runtime-core";
+import Suggest from "@/components/search/suggest.vue";
+import SearchList from "@/components/base/search-list/search-list.vue";
+import Scroll from "@/components/wrap-scroll/index.js";
+import Confirm from "@/components/base/confirm/confirm.vue";
+import { ref, computed, watch, nextTick } from "vue";
 import { getHotKeys } from "@/server/search";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import storage from "good-storage";
+import { SINGER_KEY } from "@/assets/js/constant";
+import useSearchHistory from "@/components/search/use-search-history.js";
+
 export default {
   name: "search",
-  components: { SearchInput },
+  components: { SearchInput, Suggest, SearchList, Scroll, Confirm },
   setup() {
     const query = ref("");
     const hotKeys = ref([]);
+    const selectedSinger = ref(null);
+    const scrollRef = ref(null);
+    const confirmRef = ref(null);
+
+    const store = useStore();
+    const searchHistory = computed(() => store.state.searchHistory);
+    const router = useRouter();
+
+    // hooks
+    const { saveSearch, deleteSearch, clearSearch } = useSearchHistory();
 
     getHotKeys().then((result) => {
       hotKeys.value = result.hotKeys;
     });
 
+    // watch
+    watch(query, async (newQuery) => {
+      if (!newQuery) {
+        await nextTick();
+        refreshScroll();
+      }
+    });
+
+    function refreshScroll() {
+      scrollRef.value.scroll.refresh();
+    }
+
     function addQuery(key) {
       query.value = key;
     }
 
+    function selectSong(song) {
+      saveSearch(query.value);
+      store.dispatch("addSong", song);
+    }
+
+    function selectSinger(singer) {
+      saveSearch(query.value);
+      selectedSinger.value = singer;
+      cacheSinger(singer);
+
+      router.push({
+        path: `/search/${singer.mid}`,
+      });
+    }
+
+    function cacheSinger(singer) {
+      storage.session.set(SINGER_KEY, singer);
+    }
+
+    function showConfirm(params) {
+      confirmRef.value.show();
+    }
+
     return {
+      scrollRef,
+      confirmRef,
       query,
       hotKeys,
       addQuery,
+      selectSong,
+      selectSinger,
+      selectedSinger,
+      searchHistory,
+      showConfirm,
+      // searchHistory
+      deleteSearch,
+      clearSearch,
     };
   },
 };

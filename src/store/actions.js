@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-19 00:54:43
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-08 04:38:29
+ * @LastEditTime: 2021-12-12 11:45:55
  * @FilePath: \vue-vite-music\src\store\actions.js
  */
 
@@ -90,4 +90,31 @@ export function clearSongList({ commit }) {
 	commit("setPlaylist", []);
 	commit("setCurrentIndex", 0);
 	commit("setPlayingState", false);
+}
+
+export function addSong({ commit, state }, song) {
+	const playlist = state.playlist.slice();
+	const sequenceList = state.playlist.slice();
+
+	let currentIndex = state.currentIndex;
+
+	const playIndex = findIndex(playlist, song);
+	if (playIndex > -1) {
+		currentIndex = playIndex;
+	} else {
+		// 如果没找到歌曲，则往列表添加歌曲
+		playlist.push(song);
+		currentIndex = playlist.length - 1;
+	}
+
+	const sequenceIndex = findIndex(sequenceList, song);
+	if (sequenceIndex === -1) {
+		sequenceList.push(song);
+	}
+
+	commit("setSequenceList", sequenceList);
+	commit("setPlaylist", playlist);
+	commit("setCurrentIndex", currentIndex);
+	commit("setPlayingState", true);
+	commit("setFullScreen", true);
 }

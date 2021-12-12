@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-21 21:53:32
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-07 00:37:33
+ * @LastEditTime: 2021-12-12 21:44:10
  * @FilePath: \vue-vite-music\src\components\player\player.vue
 -->
 <template>
@@ -131,6 +131,7 @@ import useCD from "./use-cd";
 import useLyric from "./use-lyric";
 import useMiddleInteractive from "./use-middle-interactive";
 import useAnimation from "./use-animation";
+import usePlayHistory from "./use-play-history";
 import ProgressBar from "./progress-bar.vue";
 import { formatTime } from "../../assets/js/util";
 import { PLAY_MODE } from "../../assets/js/constant";
@@ -188,6 +189,7 @@ export default {
     } = useMiddleInteractive();
     const { cdWrapperRef, enter, afterEnter, leave, afterLeave } =
       useAnimation();
+    const { savePlay } = usePlayHistory();
 
     // computed
     const playlist = computed(() => store.state.playlist);
@@ -305,6 +307,7 @@ export default {
 
       songReady.value = true;
       playLyric();
+      savePlay(currentSong.value);
     }
 
     /**

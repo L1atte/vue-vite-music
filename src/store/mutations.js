@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-19 00:48:33
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-24 22:50:33
+ * @LastEditTime: 2021-12-12 21:39:33
  * @FilePath: \vue-vite-music\src\store\mutations.js
  */
 const mutations = {
@@ -33,8 +33,14 @@ const mutations = {
 			if (item.mid === song.mid) {
 				item.lyric = lyric;
 			}
-      return item
+			return item;
 		});
+	},
+	setSearchHistory(state, searches) {
+		state.searchHistory = searches;
+	},
+	setPlayHistory(state, songs) {
+		state.playHistory = songs;
 	},
 };
 

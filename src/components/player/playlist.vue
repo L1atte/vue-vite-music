@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-12-06 01:00:54
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-08 04:45:28
+ * @LastEditTime: 2021-12-12 20:53:06
  * @FilePath: \vue-vite-music\src\components\player\playlist.vue
 -->
 <template>
@@ -43,6 +43,12 @@
               </li>
             </transition-group>
           </scroll>
+          <div class="list-add">
+            <div class="add" @click="showAddSong">
+              <i class="icon-add"></i>
+              <span class="text">添加歌曲到队列</span>
+            </div>
+          </div>
           <div class="list-footer" @click.stop="hide">
             <span>关闭</span>
           </div>
@@ -53,6 +59,7 @@
           text="是否清空播放列表？"
           confirm-btn-text="清空"
         ></confirm>
+        <add-song ref="addSongRef"></add-song>
       </div>
     </transition>
   </teleport>
@@ -66,15 +73,17 @@ import { nextTick, watch } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import useMode from "./use-mode";
 import useFavorite from "./use-favorite";
+import AddSong from "../add-song/add-song.vue";
 
 export default {
   name: "playlist",
-  components: { scroll, Confirm },
+  components: { scroll, Confirm, AddSong },
   setup() {
     const visible = ref(false);
     const scrollRef = ref(null);
     const listRef = ref(null);
     const confirmRef = ref(null);
+    const addSongRef = ref(null);
     const removing = ref(false);
 
     // Vuex
@@ -170,11 +179,16 @@ export default {
       hide();
     }
 
+    function showAddSong() {
+      addSongRef.value.show();
+    }
+
     return {
       visible,
       removing,
       scrollRef,
       confirmRef,
+      addSongRef,
       listRef,
       playlist,
       sequenceList,
@@ -185,6 +199,7 @@ export default {
       getCurrentIcon,
       showConfirm,
       confirmClear,
+      showAddSong,
       // mode
       modeIcon,
       modeText,

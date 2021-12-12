@@ -2,15 +2,18 @@
  * @Author: Latte
  * @Date: 2021-11-24 23:02:02
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-24 23:43:59
+ * @LastEditTime: 2021-12-13 01:21:20
  * @FilePath: \vue-vite-music\src\assets\js\array-store.js
  */
 import storage from "good-storage";
 
 function inertArray(arr, val, compare, maxLen) {
 	const index = arr.findIndex(compare);
-	if (index > -1) {
+	if (index === 0) {
 		return;
+	}
+	if (index > 0) {
+		arr.splice(index, 1);
 	}
 	arr.unshift(val);
 	if (maxLen && arr.length > maxLen) {
@@ -41,4 +44,13 @@ export function remove(key, compare) {
 
 export function load(key) {
 	return storage.get(key, []);
+}
+
+export function clear(key) {
+	storage.remove(key);
+	return [];
+}
+
+export function saveAll(items, key) {
+	storage.set(key, items);
 }

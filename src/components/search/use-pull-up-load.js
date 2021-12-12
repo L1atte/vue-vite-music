@@ -1,0 +1,61 @@
+/*
+ * @Author: Latte
+ * @Date: 2021-12-12 09:53:46
+ * @LAstEditors: Latte
+ * @LastEditTime: 2021-12-12 18:25:09
+ * @FilePath: \vue-vite-music\src\components\search\use-pull-up-load.js
+ */
+import BScroll from "@better-scroll/core";
+import PullUp from "@better-scroll/pull-up";
+import ObserveDOM from "@better-scroll/slide";
+import { ref, onMounted, onUnmounted, onActivated, onDeactivated } from "vue";
+
+BScroll.use(PullUp);
+BScroll.use(ObserveDOM);
+
+export default function usePullUpLoad(requestData, preventPullUpLoad) {
+	const scroll = ref(null);
+	const rootRef = ref(null);
+	const isPullUpLoad = ref(false);
+
+	onMounted(() => {
+		const scrollVal = (scroll.value = new BScroll(rootRef.value, {
+			pullUpLoad: true,
+			observeDOM: true,
+			click: true,
+		}));
+
+		scrollVal.on("pullingUp", pullingUpHandler);
+
+		async function pullingUpHandler() {
+			if (preventPullUpLoad.value) {
+				scrollVal.finishPullUp();
+				return;
+			}
+			isPullUpLoad.value = true;
+			await requestData();
+			scrollVal.finishPullUp();
+			scrollVal.refresh();
+			isPullUpLoad.value = false;
+		}
+	});
+
+	onUnmounted(() => {
+		scroll.value.destroy();
+	});
+
+	onActivated(() => {
+		scroll.value.enable();
+		scroll.value.refresh();
+	});
+
+	onDeactivated(() => {
+		scroll.value.disable();
+	});
+
+	return {
+		scroll,
+		rootRef,
+		isPullUpLoad,
+	};
+}
