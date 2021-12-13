@@ -2,13 +2,12 @@
  * @Author: Latte
  * @Date: 2021-11-09 00:34:03
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-14 20:57:33
- * @FilePath: \vue-vite-music\src\components\base\scroll\user-scroll.js
+ * @LastEditTime: 2021-12-13 20:11:50
+ * @FilePath: \vue-vite-music\src\components\base\scroll\use-scroll.js
  */
 import BScroll from "@better-scroll/core";
 import ObserveDOM from "@better-scroll/observe-dom";
-import { onMounted, onUnmounted } from "@vue/runtime-core";
-import { ref } from "@vue/reactivity";
+import { onMounted, onUnmounted, onActivated, onDeactivated, ref } from "vue";
 
 BScroll.use(ObserveDOM);
 
@@ -32,5 +31,14 @@ export default function useScroll(wrapperRef, options, emit) {
 		scroll.value.destroy();
 	});
 
-	return scroll
+	onActivated(() => {
+		scroll.value.enable();
+		scroll.value.refresh();
+	});
+
+	onDeactivated(() => {
+		scroll.value.disable()
+	})
+
+	return scroll;
 }

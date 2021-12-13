@@ -2,10 +2,11 @@
  * @Author: Latte
  * @Date: 2021-11-30 23:52:08
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-08 04:39:48
+ * @LastEditTime: 2021-12-13 20:15:41
  * @FilePath: \vue-vite-music\src\components\player\use-mini-slider.js
  */
 import { ref, computed } from "@vue/reactivity";
+import { onActivated, onDeactivated } from "vue";
 import { onMounted, onUnmounted, nextTick, watch } from "@vue/runtime-core";
 import BScroll from "@better-scroll/core";
 import Slide from "@better-scroll/slide";
@@ -71,6 +72,15 @@ export default function useMiniSlider() {
 		if (slider.value) {
 			slider.value.destroy();
 		}
+	});
+
+	onActivated(() => {
+		slider.value.enable();
+		slider.value.refresh();
+	});
+
+	onDeactivated(() => {
+		slider.value.disable();
 	});
 
 	return {
