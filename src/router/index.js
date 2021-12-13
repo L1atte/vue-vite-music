@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-07 15:56:15
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-13 01:47:13
+ * @LastEditTime: 2021-12-13 20:32:00
  * @FilePath: \vue-vite-music\src\router\index.js
  */
 import { createRouter, createWebHashHistory } from "vue-router";

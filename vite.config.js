@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-07 15:17:10
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-08 22:41:56
+ * @LastEditTime: 2021-12-13 20:24:37
  * @FilePath: \vue-vite-music\vite.config.js
  */
 import { defineConfig } from "vite";
@@ -17,15 +17,15 @@ export default defineConfig({
 			"@": path.resolve(__dirname, "./src"),
 		},
 	},
-  server: {
-    proxy: {
-      // 使用 proxy 实例
-      '/api': {
-        target: 'http://localhost:8080/',
-        changeOrigin: true,
-      }
-    }
-  },
+	server: {
+		proxy: {
+			// 使用 proxy 实例
+			"/api": {
+				target: "http://localhost:8080/",
+				changeOrigin: true,
+			},
+		},
+	},
 	css: {
 		preprocessorOptions: {
 			scss: {
@@ -35,6 +35,13 @@ export default defineConfig({
         `,
 			},
 		},
+	},
+	configureWebpack: (config) => {
+		if (process.env.npm_config_report) {
+			const BundleAnalyzerPlugin =
+				require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+			config.plugins.push(new BundleAnalyzerPlugin());
+		}
 	},
 	plugins: [vue()],
 });
