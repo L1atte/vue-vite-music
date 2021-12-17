@@ -2,13 +2,13 @@
  * @Author: Latte
  * @Date: 2021-11-07 21:03:16
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-17 09:50:38
+ * @LastEditTime: 2021-12-17 13:52:40
  * @FilePath: \vue-vite-music\src\server\base.js
  */
 import axios from "axios";
 
 const ERR_OK = 0;
-const baseURL = import.meta.env.VITE_BASEURL || '/';
+const baseURL = import.meta.env.VITE_BASEURL;
 
 axios.defaults.baseURL = baseURL;
 
