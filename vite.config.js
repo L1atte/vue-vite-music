@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-07 15:17:10
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-13 20:24:37
+ * @LastEditTime: 2021-12-17 09:53:45
  * @FilePath: \vue-vite-music\vite.config.js
  */
 import { defineConfig } from "vite";
@@ -44,4 +44,14 @@ export default defineConfig({
 		}
 	},
 	plugins: [vue()],
+	build: {
+		assetsDir: "static/img/",
+		rollupOptions: {
+			output: {
+				chunkFileNames: "static/js/[name]-[hash].js",
+				entryFileNames: "static/js/[name]-[hash].js",
+				assetFileNames: "static/[ext]/[name]-[hash].[ext]",
+			},
+		},
+	},
 });
