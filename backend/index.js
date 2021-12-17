@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-12-13 23:05:03
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-17 13:53:12
+ * @LastEditTime: 2021-12-18 02:05:43
  * @FilePath: \vue-vite-music\backend\index.js
  */
 const express = require("express");
@@ -19,7 +19,7 @@ app.use(require("cors")());
 registerRouter(app);
 app.use(cookieParser());
 app.use(compression());
-app.use("/music", express.static("./music"));
+app.use("/", express.static("./music"));
 
 app.listen(port, () => {
 	console.log("Listening at http://localhost:" + port + "\n");
