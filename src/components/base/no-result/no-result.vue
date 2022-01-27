@@ -2,15 +2,16 @@
  * @Author: Latte
  * @Date: 2021-11-18 21:25:25
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-18 21:55:53
+ * @LastEditTime: 2022-01-27 17:39:04
  * @FilePath: \vue-vite-music\src\components\base\no-result\no-result.vue
 -->
 <template>
   <class class="no-result">
     <div class="no-result-content">
-      <div class="icon">
+      <!-- <div class="icon">
         <p class="text">{{ title }}</p>
-      </div>
+      </div> -->
+      <p class="text">{{ title }}</p>
     </div>
   </class>
 </template>

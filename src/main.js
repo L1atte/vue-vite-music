@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-07 15:17:10
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-17 13:52:50
+ * @LastEditTime: 2022-01-27 17:05:22
  * @FilePath: \vue-vite-music\src\main.js
  */
 import { createApp } from "vue";
@@ -18,8 +18,6 @@ import { processSongs } from "@/server/song.js";
 
 // 引入全局样式文件
 import "@/assets/scss/index.scss";
-
-console.log("env",import.meta.env)
 
 // 初始化FavoriteList
 const favoriteSongs = load(FAVORITE_KEY);
@@ -44,7 +42,7 @@ app
 	.use(router)
 	.use(store)
 	.use(lazyPlugin, {
-		loading: import("./assets/logo.png"),
+		loading: import("./assets/img/default.png"),
 	})
 	.directive("loading", loadingDirective)
 	.directive("no-result", noResultDirective)
