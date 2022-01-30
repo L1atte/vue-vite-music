@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-21 21:53:32
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-12 21:44:10
+ * @LastEditTime: 2022-01-30 17:08:38
  * @FilePath: \vue-vite-music\src\components\player\player.vue
 -->
 <template>
@@ -20,7 +20,7 @@
         </div>
         <div class="top">
           <div class="back" @click="goBack">
-            <i class="icon-back"></i>
+            <i class="iconfont icon-back"></i>
           </div>
           <h1 class="title">{{ currentSong.name }}</h1>
           <h2 class="subtitle">{{ currentSong.singer }}</h2>
@@ -91,13 +91,13 @@
               <i :class="modeIcon" @click="changeMode"></i>
             </div>
             <div class="icon i-left" :class="disableCls">
-              <i class="icon-prev" @click="prev"></i>
+              <i class="iconfont icon-prev" @click="prev"></i>
             </div>
             <div class="icon i-center" :class="disableCls">
               <i :class="playIcon" @click="togglePlay"></i>
             </div>
             <div class="icon i-right" :class="disableCls">
-              <i class="icon-next" @click="next"></i>
+              <i class="iconfont icon-next" @click="next"></i>
             </div>
             <div class="icon i-right">
               <i
@@ -194,7 +194,7 @@ export default {
     // computed
     const playlist = computed(() => store.state.playlist);
     const playIcon = computed(() => {
-      return playing.value ? "icon-pause" : "icon-play";
+      return playing.value ? "iconfont icon-pause" : "iconfont icon-play";
     });
 
     const progress = computed(() => {

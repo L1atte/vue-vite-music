@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-07 15:17:10
  * @LAstEditors: Latte
- * @LastEditTime: 2022-01-27 17:05:22
+ * @LastEditTime: 2022-01-30 16:44:02
  * @FilePath: \vue-vite-music\src\main.js
  */
 import { createApp } from "vue";
@@ -18,6 +18,9 @@ import { processSongs } from "@/server/song.js";
 
 // 引入全局样式文件
 import "@/assets/scss/index.scss";
+
+// 引入 iconfont
+import '@/assets/fonts/iconfont.css'
 
 // 初始化FavoriteList
 const favoriteSongs = load(FAVORITE_KEY);

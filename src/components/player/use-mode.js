@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-23 00:49:25
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-06 01:35:38
+ * @LastEditTime: 2022-01-30 17:08:08
  * @FilePath: \vue-vite-music\src\components\player\use-mode.js
  */
 import { useStore } from "vuex";
@@ -15,10 +15,10 @@ export default function useMode() {
 	const modeIcon = computed(() => {
 		const playModeVal = playMode.value;
 		return playModeVal === PLAY_MODE.sequence
-			? "icon-sequence"
+			? "iconfont icon-sequence"
 			: playModeVal === PLAY_MODE.random
-			? "icon-random"
-			: "icon-loop";
+			? "iconfont icon-random"
+			: "iconfont icon-loop";
 	});
 
 	// 播放模式文本 如单曲循环

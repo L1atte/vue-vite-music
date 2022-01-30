@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-29 23:42:34
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-06 01:32:39
+ * @LastEditTime: 2022-01-30 16:54:22
  * @FilePath: \vue-vite-music\src\components\player\mini-player.vue
 -->
 <template>
@@ -37,7 +37,7 @@
         </progress-circle>
       </div>
       <div class="control" @click.stop="showPlaylist">
-        <i class="icon-playlist"></i>
+        <i class="iconfont icon-playlist"></i>
       </div>
       <playlist ref="playlistRef"></playlist>
     </div>
@@ -68,7 +68,7 @@ export default {
     const currentSong = computed(() => store.getters.currentSong);
     const playing = computed(() => store.state.playing);
     const miniPlayIcon = computed(() => {
-      return playing.value ? "icon-pause-mini" : "icon-play-mini";
+      return playing.value ? "iconfont icon-pause-mini" : "iconfont icon-play-mini";
     });
     const playlist = computed(() => store.state.playlist);
 

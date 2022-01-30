@@ -2,19 +2,19 @@
  * @Author: Latte
  * @Date: 2021-11-16 23:27:04
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-09 23:15:35
+ * @LastEditTime: 2022-01-30 17:21:44
  * @FilePath: \vue-vite-music\src\components\music-list\music-list.vue
 -->
 <template>
   <div class="music-list">
     <div class="back" @click="goBack">
-      <i class="icon-back"></i>
+      <i class="iconfont icon-back"></i>
     </div>
     <h1 class="title">{{ title }}</h1>
     <div class="bg-image" :style="bgImageStyle" ref="bgImage">
       <div class="play-btn-wrapper" :style="playBtnStyle">
         <div v-show="songs.length > 0" class="play-btn" @click="random">
-          <i class="icon-play"></i>
+          <i class="iconfont icon-play"></i>
           <span class="text">随机播放全部</span>
         </div>
       </div>
@@ -179,7 +179,7 @@ export default {
       display: block;
       padding: 10px;
       font-size: $font-size-large-x;
-      color: $color-theme;
+      color: $color-background;
     }
   }
   .title {
@@ -193,7 +193,7 @@ export default {
     text-align: center;
     line-height: 40px;
     font-size: $font-size-large;
-    color: $color-text;
+    color: $color-background;
   }
   .bg-image {
     position: relative;
@@ -211,8 +211,8 @@ export default {
         padding: 7px 0;
         margin: 0 auto;
         text-align: center;
-        border: 1px solid $color-theme;
-        color: $color-theme;
+        border: 1px solid $color-background;
+        color: $color-background;
         border-radius: 100px;
         font-size: 0;
       }

@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-11-24 22:51:00
  * @LAstEditors: Latte
- * @LastEditTime: 2021-11-24 23:38:52
+ * @LastEditTime: 2022-01-30 17:06:12
  * @FilePath: \vue-vite-music\src\components\player\use-favorite.js
  */
 import { useStore } from "vuex";
@@ -16,7 +16,7 @@ export default function useFavorite() {
 	const maxLen = 100;
 
 	function getFavoriteIcon(song) {
-		return isFavorite(song) ? "icon-favorite" : "icon-not-favorite";
+		return isFavorite(song) ? "iconfont icon-favorite" : "iconfont icon-not-favorite";
 	}
 
 	function isFavorite(song) {

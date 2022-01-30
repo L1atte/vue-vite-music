@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-12-12 20:39:47
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-13 00:38:15
+ * @LastEditTime: 2022-01-30 16:53:39
  * @FilePath: \vue-vite-music\src\components\add-song\add-song.vue
 -->
 <template>
@@ -12,7 +12,7 @@
         <div class="header">
           <h1 class="title">添加歌曲到列表</h1>
           <div class="close" @click="hide">
-            <i class="icon-close"></i>
+            <i class="iconfont icon-close"></i>
           </div>
         </div>
         <div class="search-input-wrapper">
@@ -60,7 +60,7 @@
         </div>
         <message ref="messageRef">
           <div class="message-title">
-            <i class="icon-ok"></i>
+            <i class="iconfont icon-ok"></i>
             <span class="text">1首歌曲已经添加到播放列表</span>
           </div>
         </message>

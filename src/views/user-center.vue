@@ -1,7 +1,7 @@
 <template>
   <div class="user-center" v-no-result:[noResultText]="noResult">
     <div class="back" @click="back">
-      <i class="icon-back"></i>
+      <i class="iconfont icon-back"></i>
     </div>
     <div class="switches-wrapper">
       <switches
@@ -10,7 +10,7 @@
       ></switches>
     </div>
     <div class="play-btn" v-if="currentList.length" @click="random">
-      <i class="icon-play"></i>
+      <i class="iconfont icon-play"></i>
       <span class="text">随机播放全部</span>
     </div>
     <div class="list-wrapper">

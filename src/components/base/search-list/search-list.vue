@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-12-12 17:31:36
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-12 21:51:19
+ * @LastEditTime: 2022-01-30 16:58:23
  * @FilePath: \vue-vite-music\src\components\base\search-list\search-list.vue
 -->
 <template>
@@ -16,7 +16,7 @@
       >
         <span class="text">{{ item }}</span>
         <span v-if="showDelete" class="icon" @click.stop="deleteItem(item)">
-          <i class="icon-delete"></i>
+          <i class="iconfont icon-delete"></i>
         </span>
       </li>
     </transition-group>

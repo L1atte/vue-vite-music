@@ -8,7 +8,7 @@
     <ul class="suggest-list">
       <li class="suggest-item" v-if="singer" @click="selectSinger(singer)">
         <div class="icon">
-          <i class="icon-mine"></i>
+          <i class="iconfont icon-mine"></i>
         </div>
         <div class="name">
           <p class="text">{{ singer.name }}</p>
@@ -21,7 +21,7 @@
         @click="selectSong(song)"
       >
         <div class="icon">
-          <i class="icon-music"></i>
+          <i class="iconfont icon-music"></i>
         </div>
         <div class="name">
           <p class="text">{{ song.singer }}-{{ song.name }}</p>

@@ -2,7 +2,7 @@
  * @Author: Latte
  * @Date: 2021-12-06 01:00:54
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-12 20:53:06
+ * @LastEditTime: 2022-01-30 17:07:07
  * @FilePath: \vue-vite-music\src\components\player\playlist.vue
 -->
 <template>
@@ -16,7 +16,7 @@
               <i class="icon" :class="modeIcon" @click.stop="changeMode"></i>
               <span class="text">{{ modeText }}</span>
               <span class="clear" @click="showConfirm">
-                <i class="icon-clear"></i>
+                <i class="iconfont icon-clear"></i>
               </span>
             </h1>
           </div>
@@ -38,14 +38,14 @@
                   :class="{ disable: removing }"
                   @click.stop="removeSong(song)"
                 >
-                  <i class="icon-delete"></i>
+                  <i class="iconfont icon-delete"></i>
                 </span>
               </li>
             </transition-group>
           </scroll>
           <div class="list-add">
             <div class="add" @click="showAddSong">
-              <i class="icon-add"></i>
+              <i class="iconfont icon-add"></i>
               <span class="text">添加歌曲到队列</span>
             </div>
           </div>
@@ -131,7 +131,7 @@ export default {
 
     function getCurrentIcon(song) {
       if (song.id === currentSong.value.id) {
-        return "icon-play";
+        return "iconfont icon-play";
       }
     }
 

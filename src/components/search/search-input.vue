@@ -2,14 +2,14 @@
  * @Author: Latte
  * @Date: 2021-12-09 23:49:52
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-10 00:49:40
+ * @LastEditTime: 2022-01-30 17:09:32
  * @FilePath: \vue-vite-music\src\components\search\search-input.vue
 -->
 <template>
   <div class="search-input">
-    <i class="icon-search"></i>
+    <i class="iconfont icon-search"></i>
     <input class="input-inner" v-model="query" :placeholder="placeholder" />
-    <i class="icon-dismiss" v-show="query" @click="clear"></i>
+    <i class="iconfont icon-dismiss" v-show="query" @click="clear"></i>
   </div>
 </template>
 

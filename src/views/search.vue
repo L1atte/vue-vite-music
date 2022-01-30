@@ -22,7 +22,7 @@
           <h1 class="title">
             <span class="text">搜索历史</span>
             <span class="clear" @click="showConfirm">
-              <i class="icon-clear"></i>
+              <i class="iconfont icon-clear"></i>
             </span>
           </h1>
           <confirm

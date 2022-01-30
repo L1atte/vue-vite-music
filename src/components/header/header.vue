@@ -2,15 +2,15 @@
  * @Author: Latte
  * @Date: 2021-11-07 18:17:49
  * @LAstEditors: Latte
- * @LastEditTime: 2021-12-13 00:59:39
+ * @LastEditTime: 2022-01-30 17:23:15
  * @FilePath: \vue-vite-music\src\components\header\header.vue
 -->
 <template>
   <div class="header">
     <span class="icon"></span>
-    <h1 class="text">Chicken Music</h1>
+    <h1 class="text">Latte</h1>
     <router-link class="mine" to="/user">
-      <i class="icon-mine"></i>
+      <i class="iconfont icon-mine"></i>
     </router-link>
   </div>
 </template>
